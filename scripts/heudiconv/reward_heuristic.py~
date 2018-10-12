@@ -52,7 +52,7 @@ def infotodict(seqinfo):
     
     for s in seqinfo:
         protocol = s.protocol_name.lower()
-        if "mprage" in protocol:
+        if "MPRAGE" in protocol:
             info[t1w].append(s.series_id)
         elif "pcasl" in protocol:
             info[pcasl].append(s.series_id)
