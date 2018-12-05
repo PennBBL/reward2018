@@ -1,0 +1,52 @@
+#####################################################
+#                                                   #
+# Heaudiconv Heuristic Summary: Part 2              #
+#                                                   #
+# 20181127                                          #
+# Tinashe M. Tapera                                 #
+#                                                   #
+# This script uses the gathered Dicom dataframe     #
+# and queries XNAT to get the projects for each     #
+# of the BBLIDs					    #
+#                                                   #
+#####################################################
+
+print("Fetching project names from XNAT and matching to scan IDs...")
+
+import pyxnat
+from pyxnat import Interface
+xnat_config = "/home/ttapera/.xnat.cfg"
+central = Interface(config=xnat_config)
+import urllib3
+urllib3.disable_warnings()
+import sys
+import os
+import pandas as pd
+
+assert central
+
+f_input = "/data/jux/BBL/projects/reward2018/reward2018/results/subjectInfo/Protocol_Summary.csv"
+
+assert os.path.isfile(f_input)
+
+df = pd.read_csv(f_input)
+
+studies = dict()
+
+for index, row in df.iterrows():
+	
+	if row['scanid'] not in studies.keys():
+		
+		print("Processing " + str(row['bblid']) + ":" + str(row['scanid']))
+		query=central.select('xnat:MRsession', ['xnat:MRsession/PROJECT']).where([('xnat:subjectData/LABEL','LIKE', str(row['bblid']).rjust(6,"*")), "AND", ('xnat:MRsession/LABEL','LIKE', str(row['scanid']).rjust(6,"*"))])
+		project=query.data
+		print(project)
+		if len(project) < 1:
+			project="No_XNAT_Data"
+		else:
+			project=project[0].values()[0]
+		studies[row["scanid"]] = project
+
+df['Project'] = df['scanid'].map(studies)
+
+df.to_csv("/data/jux/BBL/projects/reward2018/reward2018/results/subjectInfo/Protocol_Summary_with_Projects.csv")

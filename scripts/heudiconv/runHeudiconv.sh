@@ -1,4 +1,4 @@
-#!/bin/bash
+#/bin/bash
 
 # obtain scan and session labels
 scans=/data/jux/BBL/projects/reward2018/reward2018/data/rawData/*/*/

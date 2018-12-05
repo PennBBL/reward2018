@@ -16,32 +16,33 @@ def infotodict(seqinfo):
     seqitem: run number during scanning
     subindex: sub index within group
     """
+    
+    # Create Keys
+    t1w = create_key('sub-{subject}/anat/sub-{subject}_T1w')
 
-    # create keys
-    t1w = create_key('sub-{subject}/anat/sub-{subject}_t1w')
-    pcasl = create_key('sub-{subject}/asl/sub-{subject}_pcasl')
+    # ASL
+    pcasl = create_key('sub-{subject}/asl/sub-{subject}_pcasl')    
     
-    # tasks
-    face_01 = create_key('sub-{subject}/func/sub-{subject}_task-face_run-01')
-    face_02 = create_key('sub-{subject}/func/sub-{subject}_task-face_run-02')
+    # Field maps
+    b0_phase = create_key('sub-{subject}/fmap/sub-{subject}_phasediff')
+    b0_mag = create_key('sub-{subject}/fmap/sub-{subject}_magnitude')
 
-    card_01 = create_key('sub-{subject}/func/sub-{subject}_task-card_run-01')
-    card_02 = create_key('sub-{subject}/func/sub-{subject}_task-card_run-02')
+    # fmri scans
+    rest = create_key('sub-{subject}/func/sub-{subject}_task-rest_bold')
     
-    effort_01 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-01')
-    effort_02 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-02')
-    effort_03 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-03')
-    effort_04 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-04')
+    face_01 = create_key('sub-{subject}/func/sub-{subject}_task-face_run-01_bold')
+    face_02 = create_key('sub-{subject}/func/sub-{subject}_task-face_run-02_bold')
+
+    card_01 = create_key('sub-{subject}/func/sub-{subject}_task-card_run-01_bold')
+    card_02 = create_key('sub-{subject}/func/sub-{subject}_task-card_run-02_bold')
     
-    itc_01 = create_key('sub-{subject}/func/sub-{subject}_task-itc_run-01')
-    itc_02 = create_key('sub-{subject}/func/sub-{subject}_task-itc_run-02')
+    effort_01 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-01_bold')
+    effort_02 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-02_bold')
+    effort_03 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-03_bold')
+    effort_04 = create_key('sub-{subject}/func/sub-{subject}_task-effort_run-04_bold')
     
-    # field maps --- NEED TO EDIT
-    b0_mag = create_key('sub-{subject}/fmap/sub-{subject}_b0_magnitude2')
-    b0_phase = create_key('sub-{subject}/fmap/sub-{subject}_b0_phasediff')
-    
-    # resting state
-    rest = create_key('sub-{subject}/func/sub-{subject}_task-rest')
+    itc_01 = create_key('sub-{subject}/func/sub-{subject}_task-itc_run-01_bold')
+    itc_02 = create_key('sub-{subject}/func/sub-{subject}_task-itc_run-02_bold')
 
     # create the heuristic
     info = {t1w: [], pcasl: [], face_01: [], face_02: [], 
@@ -49,7 +50,6 @@ def infotodict(seqinfo):
             effort_03: [], effort_04: [], itc_01: [], itc_02: [], 
             b0_mag: [], b0_phase: [], rest: [],
             }
-    
     for s in seqinfo:
         protocol = s.protocol_name.lower()
         if "mprage" in protocol:
@@ -60,13 +60,13 @@ def infotodict(seqinfo):
             info [b0_mag].append(s.series_id)
         elif "b0map" in protocol and "P" in s.image_type:
             info [b0_phase].append(s.series_id)
-        elif "faceA0" in protocol:
+        elif "facea0" in protocol:
             info[face_01].append(s.series_id)
-        elif "faceB0" in protocol:
+        elif "faceb0" in protocol:
             info[face_02].append(s.series_id)
-        elif "cardA0" in protocol:
+        elif "carda0" in protocol:
             info[card_01].append(s.series_id)
-        elif "cardB0" in protocol:
+        elif "cardb0" in protocol:
             info[card_02].append(s.series_id)
         elif "effort1" in protocol:
             info[effort_01].append(s.series_id)

@@ -7,7 +7,7 @@
 
 # Modified_TT
 # scans=/data/jux/BBL/studies/reward/rawData/*/*/
-scans=/data/jux/BBL/projects/reward2018/reward2018/data/rawData/*/*/
+scans=/data/jux/BBL/projects/reward2018/reward2018/data/XNAT_Legacy_DICOMS/*/*/
 
 for sc in $scans; 
 
@@ -24,7 +24,7 @@ for sc in $scans;
 	# Modified_TT
 	# singularity run -B /data/jux/BBL/studies/reward/rawData:/home/axu/base /data/joy/BBL/applications/heudiconv/heudiconv-latest.simg -d /home/axu/base/{subject}/{session}/*/*/*.dcm -o /home/axu/base/output -f convertall -s ${subID} -ss ${ses}  -c none --overwrite;
 	
-	/share/apps/singularity/2.5.1/bin/singularity run -B /data/jux/BBL/projects/reward2018/reward2018/data/rawData/:/home/ttapera/singularity_temp_files /data/joy/BBL/applications/heudiconv/heudiconv-latest.simg -d /home/ttapera/singularity_temp_files/{subject}/{session}/*/*/*.dcm -o /home/ttapera/singularity_temp_files/output -f convertall -s ${subID} -ss ${ses}  -c none --overwrite;
+	/share/apps/singularity/2.5.1/bin/singularity run -B /data/jux/BBL/projects/reward2018/reward2018/data/XNAT_Legacy_DICOMS/:/home/ttapera/singularity_temp_files /data/joy/BBL/applications/heudiconv/heudiconv-latest.simg -d /home/ttapera/singularity_temp_files/{subject}/{session}/*/*/*.dcm -o /home/ttapera/singularity_temp_files/output -f convertall -s ${subID} -ss ${ses}  -c none --overwrite;
 
 done 
 
