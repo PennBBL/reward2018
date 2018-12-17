@@ -19,7 +19,7 @@ The dicoms from these scans were stored on XNAT, but were somewhat scattered. Af
 
 ## Prior Work
 
-Prior work corresponding to this attempt can be found in <a href="https://github.com/PennBBL/reward2018/wiki/Reward-File-Management-&-Heudiconv">Anna's repo</a>. Aside from `/data/jux/BBL/projects/reward2018/reward2018/scripts/DownloadingFromXnat/` and various `sandbox`es, most of the scripts in this repository are results of the prior work.
+Prior work corresponding to this attempt can be found in <a href="https://github.com/PennBBL/reward2018/wiki/Reward-File-Management-&-Heudiconv">Anna's wiki</a>. Aside from `/data/jux/BBL/projects/reward2018/reward2018/scripts/DownloadingFromXnat/` and various `sandbox`es, most of the scripts in this repository are results of the prior work.
 
 ## Defining Ground Truth
 
