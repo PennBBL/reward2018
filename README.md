@@ -6,16 +6,16 @@
 
 This repo is the project version of the repository on `/data/joy/studies/reward2018`. It contains initial attempts to gather, collate, aggregate, etc.-ate all of the scans from a number of projects. According to PI **Dan Wolf**, these projects include:
 
-* day2 
-* fndm1 
-* fndm2 
-* motive 
-* neffpilot 
-* neffv2 
-* nodra81 
+* day2
+* fndm1
+* fndm2
+* motive
+* neffpilot
+* neffv2
+* nodra81
 * nodrambrest
 
-The dicoms from these scans were stored on XNAT, but were somewhat scattered. After a lot of back and forth, we consolidated existing and missing scan IDs into what you currently see on `joy`. 
+The dicoms from these scans were stored on XNAT, but were somewhat scattered. After a lot of back and forth, we consolidated existing and missing scan IDs into what you currently see on `joy`.
 
 ## Prior Work
 
@@ -30,11 +30,11 @@ The first few weeks of this procedure were littered with emails, google sheets, 
 
 ## Heudiconv
 
-We wanted to use `heudiconv` to convert the data into a BIDS-compliant directory; to do this, we needed to run a script that summarises the dicoms according to their headers. In doing so, we discovered that previous work had not downloaded the full scanning session/sequence onto `jux` (instead, a single example dicom of each session exists for each BBLID/ScanID directory). As such, we had to double back our efforts and download *everything*. 
+We wanted to use `heudiconv` to convert the data into a BIDS-compliant directory; to do this, we needed to run a script that summarises the dicoms according to their headers. In doing so, we discovered that previous work had not downloaded the full scanning session/sequence onto `jux` (instead, a single example dicom of each session exists for each BBLID/ScanID directory). As such, we had to double back our efforts and download *everything*.
 
 ## Downloading
 
-We decided to download all of our reward data to `data/joy/studies/reward2018/dicomsFromXnat/`. The following scripts are all located in `data/jux/BBL/projects/reward2018/scripts/DownloadingFromXnat/`
+We decided to download all of our reward data to `/data/joy/studies/reward2018/dicomsFromXnat/`. The following scripts are all located in `data/jux/BBL/projects/reward2018/scripts/DownloadingFromXnat/`
 
 1. Using the priors and posteriors in `jux/.../rawData`, we construct bite-sized CSVs of the BBLID:ScanID pairs using the script `MakeSubjectCsvs.py` (note that the CSVs it creates end up located in the same directory it's run in, such that the next script has immediate access to these).
 2. With these CSVs, we can parallelise our downloads to speed up the process. We use the script `DownloadRewardParallel.py`, and submit it to `qsub` using an <a href="http://wiki.gridengine.info/wiki/index.php/Simple-Job-Array-Howto">`SGE` task array</a> and the script `SubmitDownloadRewardParallel.sh`. This is done using the `XnatDownloadHelper` python module, which:
@@ -44,4 +44,17 @@ We decided to download all of our reward data to `data/joy/studies/reward2018/di
 
 ## Flywheel
 
-Now that all of the imaging data is on `/data/joy/BBL/studies/reward2018/dicomsFromXnat/`, we can switch it over to our new data warehouse on Flywheel.
+Now that all of the imaging data is on `/data/joy/BBL/studies/reward2018/dicomsFromXnat/`, we can switch it over to our new data warehouse on Flywheel. More information on how to use Flywheel will come soon, but for now, the remainder of this document describes how data was uploaded to their platform.
+
+1. Dicoms on `/data/joy/studies/reward2018/dicomsFromXnat/` do not contain project names, hence it was necessary to once again interface with XNAT to obtain these. This was done using the script `GetStudyNamesForProtocols.py`, located at `/data/jux/BBL/projects/reward2018/reward2018/scripts/heudiconv`, and resulting in the file `Protocol_Summary_with_Projects.csv`, located in `/data/jux/BBL/projects/reward2018/reward2018/results/subjectInfo`.
+
+2. Using `Protocol_Summary_with_Projects.csv`, we wrote a script `upload_reward.py` to upload the data to Flywheel. Again, the details of how to use Flywheel will be covered separately, but `upload_reward.py` loops through the data on `/data/joy/.../dicomsFromXnat`, x-checks the BBLID:ScanID pair against the protocol summary (to get the project name), unzips the zipped dicoms (because XNAT seemed to only give us zipped stuff), and creates an upload statement as a string. This string is then executed in the command line with Flywheel's `fw_cmd` (command line tools). This script is parallelised with another `SGE` task array tool, and submitted to a `qsub` job with `SubmitRewardUpload.sh`.
+
+3. Unfortunately, not all of the data was uploaded on the first try (as `Protocol_Summary_with_Projects.csv` was not fully up to date). This was remedied later by auditing the directory and producing the static file `data/jux/BBL/projects/reward2018/data/RewardAudit.csv`. This contains the full list of reward participants and their projects, and hopefully helps to clarify all of the spread mentioned in parts 1 and 2.
+
+4. Lastly, using the audit, we ran the following scripts from `data/jux/BBL/projects/reward2018/reward2018/scripts/DownloadingFromXnat` in a `qlogin` session:
+* `consolidate_flywheel_cfn.py`, which audits data from Flywheel and CFN in the `TMPDIR`
+* `consolidate_flywheel_cfn.R`, which matched and joined the audits and filtered out redundancies, creating a new file in `TMPDIR` that lists the remaining uploads still missing from Flywheel
+* `upload_missing_reward.py`, which uploads the remaining data to Flywheel
+
+Done!
