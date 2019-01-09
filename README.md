@@ -2,14 +2,13 @@
 
 *By Tinashe M. Tapera*
 
-*Updated 17 December 2018*
+*Updated 9 January 2019*
 
 This repo is the project version of the repository on `/data/joy/studies/reward2018`. It contains initial attempts to gather, collate, aggregate, etc.-ate all of the scans from a number of projects. According to PI **Dan Wolf**, these projects include:
 
 * day2
 * fndm1
 * fndm2
-* motive
 * neffpilot
 * neffv2
 * nodra81
@@ -19,7 +18,7 @@ The dicoms from these scans were stored on XNAT, but were somewhat scattered. Af
 
 ## Prior Work
 
-Prior work corresponding to this attempt can be found in <a href="https://github.com/PennBBL/reward2018/wiki/Reward-File-Management-&-Heudiconv">Anna's wiki</a>. Aside from `/data/jux/BBL/projects/reward2018/reward2018/scripts/DownloadingFromXnat/` and various `sandbox`es, most of the scripts in this repository are results of the prior work.
+Prior work corresponding to this attempt can be found in <a href="https://github.com/PennBBL/reward2018/wiki/Reward-File-Management-&-Heudiconv">Anna's repo</a>. Aside from `/data/jux/BBL/projects/reward2018/reward2018/scripts/DownloadingFromXnat/` and the `sandbox` directory, most of the scripts in this repository are results of the prior work.
 
 ## Defining Ground Truth
 
@@ -53,7 +52,7 @@ Now that all of the imaging data is on `/data/joy/BBL/studies/reward2018/dicomsF
 3. Unfortunately, not all of the data was uploaded on the first try (as `Protocol_Summary_with_Projects.csv` was not fully up to date). This was remedied later by auditing the directory and producing the static file `data/jux/BBL/projects/reward2018/data/RewardAudit.csv`. This contains the full list of reward participants and their projects, and hopefully helps to clarify all of the spread mentioned in parts 1 and 2.
 
 4. Lastly, using the audit, we ran the following scripts from `data/jux/BBL/projects/reward2018/reward2018/scripts/DownloadingFromXnat` in a `qlogin` session:
-* `consolidate_flywheel_cfn.py`, which audits data from Flywheel and CFN in the `TMPDIR`
+* `consolidate_flywheel_cfn.py`, which audits data from Flywheel and CFN and outputs the result in the `TMPDIR`
 * `consolidate_flywheel_cfn.R`, which matched and joined the audits and filtered out redundancies, creating a new file in `TMPDIR` that lists the remaining uploads still missing from Flywheel
 * `upload_missing_reward.py`, which uploads the remaining data to Flywheel
 
